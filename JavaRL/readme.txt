@@ -1,5 +1,7 @@
 JavaRL - Bibliothèque d'apprentissage par renforcement en Java.
 
+15/07/2013 LWR comme outil de Régression générique.
+
 09/06/2013 LSPI avec 2 sous variantes (LSTDQ et LSTDQFAST)
 
 L'idée est d'implémenter LSPI pour pouvoir le tester sur des problèmes comme le HumanArm.
