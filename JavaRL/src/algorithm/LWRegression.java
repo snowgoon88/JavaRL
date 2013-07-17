@@ -10,7 +10,9 @@ import utils.JamaU;
 import Jama.Matrix;
 
 /**
- * Locally Weighted Regression
+ * Locally Weighted Regression.
+ * A version derived from [Cleveland78] is given.
+ * Another one, implemented by Thomas MOINEL according to Schaal&Stone matlab code.
  * 
  * @author alain.dutech@loria.fr (Largely based on code from Thomas MOINEL)
  */
@@ -111,6 +113,7 @@ public class LWRegression {
 		return yq;
 	}
 
+	@SuppressWarnings("unused")
 	private void checkBounds(Matrix yq) {
 		for (int i = 0; i < yq.getColumnDimension(); i++) {
 			yq.set(0, i, Math.min(Math.max(yq.get(0, i), 0.0), 1.0));
