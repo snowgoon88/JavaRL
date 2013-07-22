@@ -15,13 +15,15 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 /**
- * Paremeters for the Simulator application
+ * Paremeters for the Simulator application.
+ * 
+ * If a subClass is included, Parameters are not automatically reads !!!!
  * 
  * @author alain.dutech@loria.fr
  *
  */
 public class Parameters {
-
+	
 	/** Max simulation time allowed */
 	@Option(name="-mt",aliases={"--maxTime"},usage="Max simulation time allowed")
 	public double maxTime = 5.0;

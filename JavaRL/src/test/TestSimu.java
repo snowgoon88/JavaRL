@@ -78,6 +78,7 @@ public class TestSimu {
 	}
 	/**
 	 * Read basic parameters from the Command Line
+	 * Cannot automatically read subParameters
 	 * @param args
 	 * @return true if all parameters set.
 	 */
@@ -85,16 +86,14 @@ public class TestSimu {
 		Parameters param = new Parameters();
 		param.parseFromCLI(args);
 		System.out.println("from CLI  "+param.maxTime+"; "+param.deltaTime);
-       
-        
+		
         Parameters param2 = new Parameters();
 		param2.parseFromFile("src/test/paramTest.txt");
 		System.out.println("from FILE "+param2.maxTime+"; "+param2.deltaTime);
-        
+		
 		Parameters param3 = new Parameters();
 		param3.parse(args);
 		System.out.println("Combined  "+param3.maxTime+"; "+param3.deltaTime);
-		
 		
         return true;
 	}

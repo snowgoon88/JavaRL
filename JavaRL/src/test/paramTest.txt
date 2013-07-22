@@ -1,5 +1,7 @@
 # Parameters for Simulator
 --maxTime 8.0
+# for testing
+#--dummy
 
 
 
