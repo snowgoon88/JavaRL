@@ -1,0 +1,3 @@
+# Parameters for Simulator
+--maxTime 8.0
+-dt 0.025
