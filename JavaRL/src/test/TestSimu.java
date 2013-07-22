@@ -88,10 +88,14 @@ public class TestSimu {
        
         
         Parameters param2 = new Parameters();
-		param2.parseFromFile("src/test/paramFile.txt");
+		param2.parseFromFile("src/test/paramTest.txt");
 		System.out.println("from FILE "+param2.maxTime+"; "+param2.deltaTime);
         
-        
+		Parameters param3 = new Parameters();
+		param3.parse(args);
+		System.out.println("Combined  "+param3.maxTime+"; "+param3.deltaTime);
+		
+		
         return true;
 	}
 	/**
@@ -101,32 +105,29 @@ public class TestSimu {
 	 */
 	boolean testBatch(String[] args) {
 		Parameters param = new Parameters();
-		boolean res = param.parseFromCLI(args);
+		boolean res = param.parse(args);
 		
 		if (res==true) {
 			Simulator sim = new Simulator();
-			sim.reset();
-			while (sim._timeSimu < param.maxTime ) {
-				sim.step(param.deltaTime);
-			}
+			sim.runBatch(param);
 			return true;
 		}
 		return false;
 	}
 	
 	/**
-	 * - batch mode (tMax, DeltaT)
-	 * - [Random or Fixed] Agent decides
-	 * - log on screen and/or file (name)
-	 * - (Parameter in file)
+	 * - DONE batch mode (tMax, DeltaT)
+	 * - TODO [Random or Fixed] Agent decides
+	 * - TODO log on screen and/or file (name)
+	 * - DONE (Parameter in file)
 	 */
 	
 	/**
-	 * - Experience with scenario
+	 * - TODO Experience with scenario
 	 */
 	
 	/** 
-	 * - GUI : play/pause reset log {see ExpGUI}
+	 * - TODO GUI : play/pause reset log {see ExpGUI}
 	 */
 	
 	/**

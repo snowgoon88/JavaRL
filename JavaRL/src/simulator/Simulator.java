@@ -32,4 +32,15 @@ public class Simulator {
 		
 		_timeSimu += deltaT;
 	}
+	
+	/**
+	 * Run in Batch mode with a given set of Parameters
+	 * @param param
+	 */
+	public void runBatch( Parameters param ) {
+		reset();
+		while (_timeSimu < param.maxTime ) {
+			step(param.deltaTime);
+		}
+	}
 }

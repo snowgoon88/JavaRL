@@ -29,6 +29,23 @@ public class Parameters {
 	@Option(name="-dt",aliases={"--deltaTime"},usage="Update interval for Simulation")
 	public double deltaTime = 0.010;
 	
+	/** File to read parameters from */
+	@Option(name="-f",aliases={"--paramFile"},usage="File to read parameters from")
+	public String paramFile = "";
+	
+	/**
+	 * Parse from CommandLine then from file if given by the -f <paramFile> option.
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public boolean parse(String[] args) {
+		boolean res = parseFromCLI(args);
+		if (res == true && paramFile != "") {
+			res = parseFromFile( paramFile );
+		}
+		return res;
+	}
 	/**
 	 * Parse from the Command Line.
 	 * @param args
