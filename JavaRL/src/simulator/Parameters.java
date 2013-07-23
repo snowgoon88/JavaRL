@@ -31,6 +31,13 @@ public class Parameters {
 	@Option(name="-dt",aliases={"--deltaTime"},usage="Update interval for Simulation")
 	public double deltaTime = 0.010;
 	
+	/** log info from Simulator */
+	@Option(name="-ls",aliases={"--logScreen"},usage="log info from Simulator on Screen")
+	public boolean logScreen;
+	/** File for logging */
+	@Option(name="-lf",aliases={"--logFile"},usage="File for logging Simulator")
+	public String logFile = "";
+	
 	/** File to read parameters from */
 	@Option(name="-f",aliases={"--paramFile"},usage="File to read parameters from")
 	public String paramFile = "";

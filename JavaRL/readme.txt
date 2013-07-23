@@ -3,6 +3,7 @@ JavaRL - Bibliothèque d'apprentissage par renforcement en Java.
 22/07/2013 Generic Simulator
   * Example de base avec le HumanArm
   * Utilisation de Parameters, lu depuis un fichier ou la ligne de commande.
+  * Batch mode avec log Screen et/ou logFile
 
 15/07/2013 LWR comme outil de Régression générique.
   * Uniquement testé en mono-dimension en sortie.

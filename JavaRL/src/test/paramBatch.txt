@@ -1,0 +1,8 @@
+# Parameters for Simulator
+-mt 3.0 --deltaTime 0.1 
+# log Screen and File
+--logScreen --logFile log.data
+
+
+
+
