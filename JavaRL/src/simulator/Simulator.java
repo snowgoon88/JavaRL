@@ -3,11 +3,9 @@
  */
 package simulator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DecimalFormat;
 
+import utils.Log;
 import viewer.SCompleteArm;
 
 /**
@@ -51,23 +49,14 @@ public class Simulator {
 		SCompleteArm armV = new SCompleteArm();
 		_syst._world.addObserver(armV);
 		
-		FileWriter logFile = null;
-		BufferedWriter logWriter = null;
+		Log<String> logFile = null;
 		
 		if (param.logScreen ) {
 			System.out.println("# time\t"+armV.explainStr);
 		}
 		if (param.logFile != "") {
-			try {
-				logFile = new FileWriter( param.logFile);
-				logWriter = new BufferedWriter(logFile);
-				logWriter.write("# time\t"+armV.explainStr+"\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				logFile = null;
-				logWriter = null;
-			}
+			logFile = new Log<String>(param.logFile);
+			logFile.writeLine("# time\t"+armV.explainStr);
 		}
 		
 		reset();
@@ -75,12 +64,7 @@ public class Simulator {
 			System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 		}
 		if (logFile != null) {
-			try {
-				logWriter.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr+"\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 		}
 		while (_timeSimu < param.maxTime ) {
 			step(param.deltaTime);
@@ -88,23 +72,11 @@ public class Simulator {
 				System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 			}
 			if (logFile != null) {
-				try {
-					logWriter.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr+"\n");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 			}
 		}
-		if (logWriter != null) {
-			try {
-				logWriter.close();
-				logFile.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		if (logFile != null) {
+			logFile.close();
 		}
 	}
 }
