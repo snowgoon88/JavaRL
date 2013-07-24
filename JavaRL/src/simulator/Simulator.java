@@ -46,17 +46,17 @@ public class Simulator {
 	 */
 	public void runBatch( Parameters param ) {
 		// Observer
-		SCompleteArm armV = new SCompleteArm();
+		SCompleteArm armV = new SCompleteArm(_syst._world);
 		_syst._world.addObserver(armV);
 		
 		Log<String> logFile = null;
 		
 		if (param.logScreen ) {
-			System.out.println("# time\t"+armV.explainStr);
+			System.out.println("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
 		}
 		if (param.logFile != "") {
 			logFile = new Log<String>(param.logFile);
-			logFile.writeLine("# time\t"+armV.explainStr);
+			logFile.writeLine("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
 		}
 		
 		reset();

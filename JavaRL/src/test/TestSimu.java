@@ -115,13 +115,6 @@ public class TestSimu {
 	}
 	
 	/**
-	 * - DONE batch mode (tMax, DeltaT)
-	 * - TODO [Random or Fixed] Agent decides
-	 * - DONE log on screen and/or file (name)
-	 * - DONE (Parameter in file)
-	 */
-	
-	/**
 	 * - TODO Experience with scenario
 	 */
 	
