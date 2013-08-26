@@ -78,7 +78,7 @@ public class DynSystem {
 	 * Use agent decisions to change the state of the World
 	 * for the next deltaT simulation time.
 	 * @param time of the Simulator
-	 * @param deltaT need world Updtated at time+deltaT
+	 * @param deltaT need world Updated at time+deltaT
 	 */
 	public void updateWorld( double time, double deltaT ) {
 		// Applique les consignes sur le bras
