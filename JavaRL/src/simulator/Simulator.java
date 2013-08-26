@@ -46,7 +46,7 @@ public class Simulator {
 	 */
 	public void runBatch( Parameters param ) {
 		// Observer
-		SCompleteArm armV = new SCompleteArm();
+		SCompleteArm armV = new SCompleteArm(_syst._world);
 		_syst._world.addObserver(armV);
 		
 		Log<String> logFile = null;
