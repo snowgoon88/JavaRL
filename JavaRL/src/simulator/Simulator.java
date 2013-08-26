@@ -52,11 +52,11 @@ public class Simulator {
 		Log<String> logFile = null;
 		
 		if (param.logScreen ) {
-			System.out.println("# time\t"+armV.explainStr);
+			System.out.println("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
 		}
 		if (param.logFile != "") {
 			logFile = new Log<String>(param.logFile);
-			logFile.writeLine("# time\t"+armV.explainStr);
+			logFile.writeLine("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
 		}
 		
 		reset();
