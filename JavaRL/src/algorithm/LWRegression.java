@@ -27,14 +27,15 @@ public class LWRegression {
 	 * This is MONO valued.
 	 * 
 	 * @param query Query point 
-	 * @param Xsamples List of X ccordinates of samples
+	 * @param Xsamples List of X coordinates of samples
 	 * @param Ysamples List of Y value of samples
 	 * @return the predicted value at the query point
 	 */
-	public double predict( double[] query, 
-			ArrayList<double[]> Xsamples, ArrayList<Double> Ysamples ) {
+	public double[] predict( double[] query, 
+			ArrayList<double[]> Xsamples, ArrayList<double[]> Ysamples ) {
 		
-		int dimX = query.length;
+		int dimX = Xsamples.get(0).length;
+		int dimY = Ysamples.get(0).length;
 		
 		// Matrix xq
 		Matrix xq = new Matrix(1,dimX+1, 1.0);
@@ -44,15 +45,17 @@ public class LWRegression {
 		
 		// Matrix X and Y, and W
 		Matrix X = new Matrix(Xsamples.size(), dimX+1, 1.0);
-		Matrix Y = new Matrix(Ysamples.size(), 1);
+		Matrix Y = new Matrix(Ysamples.size(), dimY);
 		Matrix W = new Matrix(Xsamples.size(), Xsamples.size(), 0.0);
 		for (int i = 0; i < Xsamples.size(); i++) {
 			double[] xSample = Xsamples.get(i);
-			double ySample = Ysamples.get(i);
+			double[] ySample = Ysamples.get(i);
 			for (int j = 0; j < xSample.length; j++) {
 				X.set(i, j, xSample[j]);
 			}
-			Y.set(i, 0, ySample);
+			for (int j = 0; j < ySample.length; j++) {
+				Y.set(i, j, ySample[j]);
+			}
 			double dist_qX = X.getMatrix(i, i, 0, dimX).minusEquals(xq).normF();
 			W.set(i, i, weightFunction( dist_qX ));
 		}
@@ -63,7 +66,7 @@ public class LWRegression {
 		_beta = JamaU.pinv2( WX.transpose().times(WX)).times(WX.transpose()).times(V);
 		Matrix hatY = xq.times(_beta);
 		
-		return hatY.get(0,0);
+		return hatY.getRowPackedCopy();
 	}
 	
 	private double weightFunction( double d) {
@@ -72,10 +75,10 @@ public class LWRegression {
 
 	/* from Thomas MOINEL */
 	public Matrix doRegression(double[] query,
-			ArrayList<double[]> Xsamples, ArrayList<Double> Ysamples ) {
+			ArrayList<double[]> Xsamples, ArrayList<double[]> Ysamples ) {
 		int dim_x = query.length+1;
 		//int dim_y = query.getCommand().getColumnDimension();
-		int dim_y = 1;
+		int dim_y = Ysamples.get(0).length;
 		int nbVector = Xsamples.size();
 		// init martix
 		Matrix xq_p = new Matrix(query, 1);
@@ -93,7 +96,10 @@ public class LWRegression {
 			}
 			X.set(i, dim_x-1, 1.0);
 			//Y.setMatrix(i, i, 0, dim_y - 1, vicinity[i].getCommand());
-			Y.set(i, 0, Ysamples.get(i));
+			double[] vecy = Ysamples.get(i);
+			for (int j = 0; j < dim_y; j++) {
+				Y.set(i, j, vecy[j]);
+			}
 			
 			double d_i = X.getMatrix(i, i, 0, dim_x - 1).minusEquals(xq)
 					.norm2();

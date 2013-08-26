@@ -92,23 +92,23 @@ public class TestLWR {
 		
 		// Prepare data
 		ArrayList<double[]> xdata = new ArrayList<double[]>();
-		ArrayList<Double> ydata = new ArrayList<Double>();
+		ArrayList<double[]> ydata = new ArrayList<double[]>();
 		for (int i = 0; i < Xs.getRowDimension(); i++) {
 			xdata.add( Xs.getMatrix(i, i, 0, Xs.getColumnDimension()-1).getColumnPackedCopy() );
-			ydata.add( Ys.get(i, 0));
+			ydata.add( Ys.getMatrix(i, i, 0, Ys.getColumnDimension()-1).getRowPackedCopy() );
 		}
 		double[] query = {0.0};
 		
 		// Prediction en 0.0 avec sigma=1.0
 		LWRegression regLWR = new LWRegression();
-		double pred = regLWR.predict(query, xdata, ydata );
-		System.out.println("pred="+pred);
+		double[] pred = regLWR.predict(query, xdata, ydata );
+		System.out.println("pred="+pred[0]);
 		// Selon T. Moinel
 		System.out.println("pred="+JamaU.matToString(regLWR.doRegression(query, xdata, ydata )));
 		
 		// avec Sigma = 0.1;
 		regLWR._sigma = 0.1;
-		System.out.println("pred="+regLWR.predict(query, xdata, ydata ));
+		System.out.println("pred="+regLWR.predict(query, xdata, ydata )[0]);
 	
 		return true; // it compiles
 	}
@@ -128,10 +128,10 @@ public class TestLWR {
 		
 		// Prepare data
 		ArrayList<double[]> xdata = new ArrayList<double[]>();
-		ArrayList<Double> ydata = new ArrayList<Double>();
+		ArrayList<double[]> ydata = new ArrayList<double[]>();
 		for (int i = 0; i < Xs.getRowDimension(); i++) {
 			xdata.add( Xs.getMatrix(i, i, 0, Xs.getColumnDimension()-1).getColumnPackedCopy() );
-			ydata.add( Ys.get(i, 0));
+			ydata.add( Ys.getMatrix(i, i, 0, Ys.getColumnDimension()-1).getRowPackedCopy() );
 		}
 		
 		// Prepare output
@@ -142,7 +142,7 @@ public class TestLWR {
 		double[] query;
 		for (int i = 0; i < Xf.getRowDimension(); i++) {
 			query = Xf.getMatrix(i, i, 0, Xf.getColumnDimension()-1).getColumnPackedCopy();
-			Ylwr.set(i, 0, regLWR.predict(query, xdata, ydata ));
+			Ylwr.set(i, 0, regLWR.predict(query, xdata, ydata )[0]);
 			//System.out.println(JamaU.matToString(regLWR._beta));
 			Ylwr.setMatrix(i, i, 1, 2, regLWR._beta.transpose());
 			Ytho.set(i, 0, regLWR.doRegression(query, xdata, ydata ).get(0, 0) );
