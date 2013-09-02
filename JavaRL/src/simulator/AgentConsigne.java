@@ -57,15 +57,18 @@ public class AgentConsigne extends Consignes {
 	
 	/**
 	 * Update Consigne Matrix 'u' with proper command.
-	 * @param u Consigne Matrix (1 x nb_muscles)
+	 * 
 	 * @param time (in s) since AgentConsigne started.
+	 * @return u Val of Consigne Matrix (1 x nb_muscles)
 	 */
-	public void getConsigne( Matrix u, double time ) {
+	public Matrix getValConsigne( double time ) {
+		Matrix u = new Matrix(1, size(), 0);
 		for (int i = 0; i < size(); i++) {
 			CommandSequence cs = get(i);
 			// la valeur de la consigne est copiée dans le vecteur u
 			u.set(0,i, cs.getValAtTimeFocussed(time - _startingTime));
 		}
+		return u;
 	}
 	/**
 	 * Test if AgentConsigne still gives valid Command.

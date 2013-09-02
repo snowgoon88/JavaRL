@@ -32,12 +32,21 @@ public class Simulator {
 		_timeSimu = 0.0;
 		_syst.reset();
 	}
-	
+	/**
+	 * One simulation step.
+	 * @param deltaT how long last this step
+	 */
 	public void step( double deltaT ) {
 		_syst.updateAgents(_timeSimu);
 		_syst.updateWorld(_timeSimu, deltaT);
 		
 		_timeSimu += deltaT;
+	}
+	/**
+	 * What has to be done at end of one run
+	 */
+	public void wrapUp() {
+		_syst.wrapUp();
 	}
 	
 	/**
@@ -78,5 +87,7 @@ public class Simulator {
 		if (logFile != null) {
 			logFile.close();
 		}
+		
+		wrapUp();
 	}
 }

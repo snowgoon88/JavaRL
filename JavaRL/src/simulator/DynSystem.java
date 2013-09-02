@@ -3,12 +3,8 @@
  */
 package simulator;
 
-import java.io.IOException;
-
-import Jama.Matrix;
-import model.CommandSequence;
 import model.CompleteArm;
-import model.Consignes;
+
 
 /**
  * A 'DynSystem' is made of a World and an Agent at least.
@@ -19,36 +15,23 @@ import model.Consignes;
 public class DynSystem {
 
 	/** Agent */
-	// Agent is a set of Consigne for this example
-	public Consignes _agent;
-	// Essai de AgentConsignes
-	public AgentConsigne _agent2 = null;
-	/** Commandes pour les Muscles : 1 x nb_muscles */
-	Matrix _u = null;
+	// Agent is linked to CompleteArm and use AgentConsigne for this example.
+	public Agent _agent;
+	AgentConsigne _consigne = null;
+	boolean _decisionFlag = false;
 	
 	/** World */
 	// World is the complete arm for this example
 	public CompleteArm _world;
 
+	
 	/**
 	 * 
 	 */
 	public DynSystem() {
 		_world = new CompleteArm();
-//		_agent = null;
-//		_agent.linkToWorld( _world );
-//		_world.addAgent( _agent );
-		_agent = new Consignes(_world.getArrayNeuroControlers().length);
-		_agent2 = null;
-		
-		_u = new Matrix(1,_world.getArrayNeuroControlers().length, 0.0);
-		try {
-			_agent.read("src/test/consigne_agent.data");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		_agent = new Agent( _world );
+		_consigne = null;
 	}
 	
 	/**
@@ -61,46 +44,23 @@ public class DynSystem {
 		_world.getArm().setArmSpeed(new double[] {Math.toRadians(2),0});
 	
 		// Agent
-		// Un vecteur (Matrix 1x6) de consignes musculaires, initialisée à 0.0.
-		for (int i = 0; i < 6; i++) {
-			_u.set(0,i, 0.0);
-		}
 	}
 	/**
 	 * Perception and Decision
 	 * @param time of the Simulator
 	 */
 	public void updateAgents( double time ) {
-//		// Agent
-//		for (int i = 0; i < _agent.size(); i++) {
-//			CommandSequence cs = _agent.get(i);
-//			// la valeur de la consigne est copiée dans le vecteur u
-//			_u.set(0,i, cs.getValAtTimeFocussed(time));
-//		}
-		
-		// TODO Perception par l'agent
-		// Etat = Ang x VitAng x DeltaX
-		int dimArm = _world.getArm().getDimension();
-		Matrix armState = new Matrix(1, 2*dimArm+2, 0.0);
-		armState.setMatrix(0, 0, 0, dimArm-1, _world.getArm().getArmPos());
-		armState.setMatrix(0, 0, dimArm, 2*dimArm-1, _world.getArm().getArmSpeed());
-		//_world.getArm().
-		
-		// TODO   1) Agent build Command Template at Random if Empty
-		//        2) Agent follow CommandTemplate till the end
-		//        3) Agent builds another one if first is at end.
-		if (_agent2 == null) {
-			// Construit avec Consigne 3 à 0.5, durée=1s
-			_agent2 = new AgentConsigne(time,1.0);
-			_agent2.setConsigne(3, 0.5);
+		// Agent Perception if not ready or end of current consigne
+		if (_consigne == null ) {
+			_agent.perceive();
+			_consigne = _agent.decide(time);
+			_decisionFlag = true;
 		}
-		else if (_agent2.isStillValid(time) == false) {
-			// Construit avec Consigne 2 à 0.2, durée=1s
-			_agent2 = new AgentConsigne(time,1.0);
-			_agent2.setConsigne(2, 0.2);
-		}
-		_agent2.getConsigne(_u, time);
-		
+		else if (_consigne.isStillValid(time) == false) {
+			_agent.perceive();
+			_consigne = _agent.decide(time);
+			_decisionFlag = true;
+		}		
 	}
 	
 	/**
@@ -111,11 +71,22 @@ public class DynSystem {
 	 */
 	public void updateWorld( double time, double deltaT ) {
 		// Applique les consignes sur le bras
-		_world.applyCommand(_u, deltaT);
-		// exmple with 0 torque _world.applyTorque(new Matrix(1,2,0.0), deltaT);
+		_world.applyCommand(_consigne.getValConsigne(time), deltaT);
+		
+		// And the agent learns
+		if (_decisionFlag) {
+			_agent.learn();
+			_decisionFlag = false;
+		}
 	}
 	
-	
-	
+	/**
+	 * wrapUp world and agent.
+	 */
+	public void wrapUp() {
+		// Print Agent memory
+		System.out.println("AGENT MEMORY");
+		_agent._memory.dumpDisplay("");
+	}
 	
 }
