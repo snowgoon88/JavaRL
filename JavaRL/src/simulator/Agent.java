@@ -47,7 +47,7 @@ public class Agent {
 		// State : q,dq,dx
 		_state = new Matrix(1,2*_dimArm+2,0.0);
 		// Action : u
-		_action = new Matrix(1,_dimCom);
+		_action = null;
 		
 		// Memory
 		_memory = new KdTree<>(_state.getColumnDimension(), 20); /*dim, sizeBucket */
@@ -61,13 +61,21 @@ public class Agent {
 	/**
 	 * Called when a decision should be made
 	 */
-	void perceive() {
+	void perceive(double time) {
+		// Need to learn
+		if (_action != null) {
+			learn(time);
+		}
+		
 		// Update State with q,dq
 		_state.setMatrix(0, 0, 0, _dimArm-1, _world.getArm().getArmPos());
 		_state.setMatrix(0, 0, _dimArm, 2*_dimArm-1, _world.getArm().getArmSpeed());
 		// Update current position
-		_x = _world.getArm().getArmEndPointMatrix();
+		_x = _world.getArm().getArmEndPointMatrix().copy();
 		// dx untouched
+		
+//		System.out.println("Agent.perceive() t="+time+" S="+JamaU.matToString(_state));
+//		System.out.println("Agent.perceive() t="+time+" _x="+JamaU.matToString(_x));
 	}
 	/**
 	 * Based upon the current perception of the World
@@ -82,18 +90,27 @@ public class Agent {
 		_consigne = randomConsigne(time, 1.0);
 		_action = _consigne.getValConsigne(time); // to Learn
 		
+//		System.out.println("Agent.decide() t="+time+" S="+JamaU.matToString(_state));
+//		System.out.println("Agent.decide() t="+time+" _x="+JamaU.matToString(_x));
+		
 		return _consigne;
 	}
 	/**
 	 * Called after a decision has been applied on the World.
 	 */
-	void learn() {
+	void learn(double time) {
 		// Compute realized dx : current.dx - stored.dx
 		Matrix dx = _world.getArm().getArmEndPointMatrix().minus(_x);
 		_state.setMatrix(0, 0, 2*_dimArm, 2*_dimArm+1, dx);
 		
 		// Store the result
-		_memory.addPoint(_state.getColumnPackedCopy(), new Pair<Matrix>(_state,_action));
+		_memory.addPoint(_state.getColumnPackedCopy(), new Pair<Matrix>(_state.copy(),_action.copy()));
+		
+		
+//		System.out.println("Agent.learn() t="+time+" S="+JamaU.matToString(_state));
+//		System.out.println("Agent.learn() t="+time+" _x="+JamaU.matToString(_x));
+//		System.out.println("Agent.learn() t="+time+" End="+JamaU.matToString(_world.getArm().getArmEndPointMatrix()));
+//		System.out.println("Agent.learn() t="+time+" dx="+JamaU.matToString(dx));
 		
 	}
 	
@@ -107,8 +124,7 @@ public class Agent {
 	 * @return randomly generated AgentConsigne
 	 */
 	AgentConsigne randomConsigne(double time, double timeLength) {
-		
-		
+
 		//System.out.println(">>> New AgentConsigne at t="+time+" for "+timeLength+" s.");
 		//String str = "";
 		AgentConsigne act = new AgentConsigne(time, timeLength);

@@ -46,7 +46,7 @@ public class Simulator {
 	 * What has to be done at end of one run
 	 */
 	public void wrapUp() {
-		_syst.wrapUp();
+		_syst.wrapUp(_timeSimu);
 	}
 	
 	/**

@@ -3,6 +3,12 @@
  */
 package simulator;
 
+
+import utils.JamaU;
+import utils.dataStructures.Pair;
+import utils.dataStructures.trees.thirdGenKD.KdTreeIterator;
+import Jama.Matrix;
+
 import model.CompleteArm;
 
 
@@ -18,7 +24,6 @@ public class DynSystem {
 	// Agent is linked to CompleteArm and use AgentConsigne for this example.
 	public Agent _agent;
 	AgentConsigne _consigne = null;
-	boolean _decisionFlag = false;
 	
 	/** World */
 	// World is the complete arm for this example
@@ -52,14 +57,12 @@ public class DynSystem {
 	public void updateAgents( double time ) {
 		// Agent Perception if not ready or end of current consigne
 		if (_consigne == null ) {
-			_agent.perceive();
+			_agent.perceive(time);
 			_consigne = _agent.decide(time);
-			_decisionFlag = true;
 		}
 		else if (_consigne.isStillValid(time) == false) {
-			_agent.perceive();
+			_agent.perceive(time);
 			_consigne = _agent.decide(time);
-			_decisionFlag = true;
 		}		
 	}
 	
@@ -72,21 +75,24 @@ public class DynSystem {
 	public void updateWorld( double time, double deltaT ) {
 		// Applique les consignes sur le bras
 		_world.applyCommand(_consigne.getValConsigne(time), deltaT);
-		
-		// And the agent learns
-		if (_decisionFlag) {
-			_agent.learn();
-			_decisionFlag = false;
-		}
 	}
 	
 	/**
 	 * wrapUp world and agent.
 	 */
-	public void wrapUp() {
+	public void wrapUp(double time) {
+		// Agent learns one last time
+		_agent.learn(time);
 		// Print Agent memory
 		System.out.println("AGENT MEMORY");
-		_agent._memory.dumpDisplay("");
+		
+		for (KdTreeIterator<Pair<Matrix>> it = _agent._memory.getKdTreeIterator(); it.hasNext();) {
+			Pair<Matrix> item = it.next();
+			String str = "In S="+JamaU.matToString(item.first.getMatrix(0, 0, 0, 3));
+			str += " A="+JamaU.matToString(item.second);
+			str += " ==> dX="+JamaU.matToString(item.first.getMatrix(0, 0, 4, 5));
+			System.out.println(str);
+		}
 	}
 	
 }
