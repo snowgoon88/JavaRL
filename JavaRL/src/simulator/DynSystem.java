@@ -49,6 +49,8 @@ public class DynSystem {
 		_world.getArm().setArmSpeed(new double[] {Math.toRadians(2),0});
 	
 		// Agent
+		_consigne = null;
+		
 	}
 	/**
 	 * Perception and Decision
@@ -83,6 +85,12 @@ public class DynSystem {
 	public void wrapUp(double time) {
 		// Agent learns one last time
 		_agent.learn(time);
+	}
+	
+	/**
+	 * Display Agent
+	 */
+	public void displayAgent() {
 		// Print Agent memory
 		System.out.println("AGENT MEMORY");
 		

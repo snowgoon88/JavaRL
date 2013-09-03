@@ -50,6 +50,13 @@ public class Simulator {
 	}
 	
 	/**
+	 * At the end of simulation.
+	 */
+	public void end() {
+		_syst.displayAgent();
+	}
+	
+	/**
 	 * Run in Batch mode with a given set of Parameters
 	 * @param param
 	 */
@@ -68,26 +75,31 @@ public class Simulator {
 			logFile.writeLine("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
 		}
 		
-		reset();
-		if (param.logScreen) {
-			System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-		}
-		if (logFile != null) {
-			logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-		}
-		while (_timeSimu < param.maxTime ) {
-			step(param.deltaTime);
+		// We do this 10 times
+		for( int i=0; i<10;i++) {
+			reset();
 			if (param.logScreen) {
 				System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 			}
 			if (logFile != null) {
 				logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
 			}
+			while (_timeSimu < param.maxTime ) {
+				step(param.deltaTime);
+				if (param.logScreen) {
+					System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+				}
+				if (logFile != null) {
+					logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+				}
+			}
+			wrapUp();
 		}
+		
+		end();
+		
 		if (logFile != null) {
 			logFile.close();
 		}
-		
-		wrapUp();
 	}
 }

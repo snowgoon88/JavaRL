@@ -109,6 +109,17 @@ public class TestLWR {
 		// avec Sigma = 0.1;
 		regLWR._sigma = 0.1;
 		System.out.println("pred="+regLWR.predict(query, xdata, ydata )[0]);
+		
+		// Same with Matrices
+		ArrayList<Matrix> xM = new ArrayList<Matrix>();
+		ArrayList<Matrix> yM = new ArrayList<Matrix>();
+		for (int i = 0; i < Xs.getRowDimension(); i++) {
+			xM.add( Xs.getMatrix(i, i, 0, Xs.getColumnDimension()-1) );
+			yM.add( Ys.getMatrix(i, i, 0, Ys.getColumnDimension()-1) );
+		}
+		Matrix qM = new Matrix(1,1,0);
+		Matrix pM = regLWR.predict(qM, xM, yM);
+		System.out.println("pM="+JamaU.matToString(pM));
 	
 		return true; // it compiles
 	}

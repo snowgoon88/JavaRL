@@ -3,6 +3,7 @@
  */
 package test;
 
+
 import simulator.Parameters;
 import simulator.Simulator;
 
@@ -126,6 +127,11 @@ public class TestSimu {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		// Set up a simple configuration that logs on the console.
+		// v1.2 -Dlog4j.configuration=log/log4j1.2.xml
+		// v2   -Dlog4j.configurationFile=log/log4j2.xml
+		
 		TestSimu app = new TestSimu();
 		app.run(args);
 
