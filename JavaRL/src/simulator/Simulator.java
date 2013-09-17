@@ -5,8 +5,7 @@ package simulator;
 
 import java.text.DecimalFormat;
 
-import utils.Log;
-import viewer.SCompleteArm;
+import org.kohsuke.args4j.Option;
 
 /**
  * Implements the sensori-motor loop between an Agent and a World.
@@ -17,89 +16,115 @@ public class Simulator {
 	
 	DecimalFormat df3_5 = new DecimalFormat( "000.00000" );
 	
-	DynSystem _syst;
+	/** Max simulation time allowed */
+	@Option(name="-mt",aliases={"--maxTime"},usage="Max simulation time allowed")
+	public double _maxTime = 5.0;
+	/** Update interval for Simulation */
+	@Option(name="-dt",aliases={"--deltaTime"},usage="Update interval for Simulation")
+	public double _deltaTime = 0.010;
+	/** Nb time the XP is repeated */
+	@Option(name="-n",aliases={"--nbXP"},usage="Nb of time XP is repeated")
+	int _nbXP = 1;
+	
+	/** Experience to run */
+	XPDefault _xp;
+	
+	/** Time of the Simulation */
 	public double _timeSimu;
 	
-	public Simulator() {
+	/**
+	 * Create.
+	 * @param xp
+	 */
+	public Simulator(XPDefault xp) {
 		// Initialisation
-		_syst = new DynSystem();
+		_xp = xp;
 	}
 	
 	/**
-	 * Set World in a starting state : position and consigne.
+	 * Run in Batch mode. Parameters set with ParameterFactory
 	 */
-	public void reset() {
-		_timeSimu = 0.0;
-		_syst.reset();
-	}
-	/**
-	 * One simulation step.
-	 * @param deltaT how long last this step
-	 */
-	public void step( double deltaT ) {
-		_syst.updateAgents(_timeSimu);
-		_syst.updateWorld(_timeSimu, deltaT);
+	public void runBatch() {
+		_xp.init();
 		
-		_timeSimu += deltaT;
+		for( int i=0; i< _nbXP; i++) {
+			// runStart
+			_timeSimu = 0.0;
+			_xp.reset(i);
+			// while not runEnd
+			while (_timeSimu < _maxTime) {
+				_xp.updateAgents(_timeSimu);
+				_xp.updateWorld(_timeSimu, _deltaTime);
+				
+				_timeSimu += _deltaTime;
+			}
+			// runWrap
+			_xp.wrapUp(_timeSimu);
+		}
+		
+		_xp.end();
 	}
-	/**
-	 * What has to be done at end of one run
-	 */
-	public void wrapUp() {
-		_syst.wrapUp(_timeSimu);
-	}
+
+//	/**
+//	 * Run in Batch mode with Logging.
+//	 * @param param
+//	 */
+//	public void runBatch( Parameters param ) {
+//		// Observer
+//		SCompleteArm armV = new SCompleteArm(_xp._world);
+//		_xp._world.addObserver(armV);
+//		
+//		Log<String> logFile = null;
+//		
+//		if (param.logScreen ) {
+//			System.out.println("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
+//		}
+//		if (param.logFile != "") {
+//			logFile = new Log<String>(param.logFile);
+//			logFile.writeLine("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
+//		}
+//		
+//		// We do this 10 times
+//		for( int i=0; i<10;i++) {
+//			reset();
+//			if (param.logScreen) {
+//				System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+//			}
+//			if (logFile != null) {
+//				logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+//			}
+//			while (_timeSimu < param.maxTime ) {
+//				step(param.deltaTime);
+//				if (param.logScreen) {
+//					System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+//				}
+//				if (logFile != null) {
+//					logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
+//				}
+//			}
+//			wrapUp();
+//		}
+//		
+//		end();
+//		
+//		if (logFile != null) {
+//			logFile.close();
+//		}
+//	}
 	
-	/**
-	 * At the end of simulation.
-	 */
-	public void end() {
-		_syst.displayAgent();
-	}
-	
-	/**
-	 * Run in Batch mode with a given set of Parameters
-	 * @param param
-	 */
-	public void runBatch( Parameters param ) {
-		// Observer
-		SCompleteArm armV = new SCompleteArm(_syst._world);
-		_syst._world.addObserver(armV);
-		
-		Log<String> logFile = null;
-		
-		if (param.logScreen ) {
-			System.out.println("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
-		}
-		if (param.logFile != "") {
-			logFile = new Log<String>(param.logFile);
-			logFile.writeLine("#"+String.format("%8s", "time")+"\t"+armV.explainStr);
-		}
-		
-		// We do this 10 times
-		for( int i=0; i<10;i++) {
-			reset();
-			if (param.logScreen) {
-				System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-			}
-			if (logFile != null) {
-				logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-			}
-			while (_timeSimu < param.maxTime ) {
-				step(param.deltaTime);
-				if (param.logScreen) {
-					System.out.println(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-				}
-				if (logFile != null) {
-					logFile.write(df3_5.format(_timeSimu)+"\t"+armV.viewStr);
-				}
-			}
-			wrapUp();
-		}
-		
-		end();
-		
-		if (logFile != null) {
-			logFile.close();
-		}
-	}
+//	// populate the State x Action space
+//	int nbTraj = 10;
+//	for( int i=0; i<nbTraj; i++) {
+//		// runStart
+//		reset();
+//		// while not runEnd
+//		while (_timeSimu < param.maxTime) {
+//			step(param.deltaTime);
+//		}
+//		// runWrap
+//		wrapUp();
+//	}
+//
+//	// test that nearest are the nearest
+//	return _syst.testMemory();
 }

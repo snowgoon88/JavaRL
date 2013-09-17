@@ -4,10 +4,12 @@
 package test;
 
 
-import simulator.Parameters;
+import simulator.DynSystem;
 import simulator.Simulator;
+import utils.ParameterFactory;
 
 /**
+ * run with --paramFile src/test/paramBatch.txt
  * @author dutech
  *
  */
@@ -35,15 +37,7 @@ public class TestSimu {
 		else {
 			System.err.println("testBasic >> "+res);
 		}
-		nbTest ++;
-		res = testArg4j(args);
-		if (res) {
-			System.out.println("testArgs4j >> "+res);
-			nbPassed ++;
-		}
-		else {
-			System.err.println("testArgs4j >> "+res);
-		}
+		
 		nbTest ++;
 		res = testBatch(args);
 		if (res) {
@@ -69,50 +63,34 @@ public class TestSimu {
 	 * @return
 	 */
 	boolean testBasic(String[] args) {
-		Simulator _sim = new Simulator();
-		_sim.reset();
+		DynSystem syst = new DynSystem(null);
+		Simulator sim = new Simulator(syst);
+		sim.runBatch();
 		
-		while (_sim._timeSimu < 5.0 ) {
-			_sim.step(0.1);
-		}
 		return true;
-	}
-	/**
-	 * Read basic parameters from the Command Line
-	 * Cannot automatically read subParameters
-	 * @param args
-	 * @return true if all parameters set.
-	 */
-	boolean testArg4j(String[] args) {
-		Parameters param = new Parameters();
-		param.parseFromCLI(args);
-		System.out.println("from CLI  "+param.maxTime+"; "+param.deltaTime);
-		
-        Parameters param2 = new Parameters();
-		param2.parseFromFile("src/test/paramTest.txt");
-		System.out.println("from FILE "+param2.maxTime+"; "+param2.deltaTime);
-		
-		Parameters param3 = new Parameters();
-		param3.parse(args);
-		System.out.println("Combined  "+param3.maxTime+"; "+param3.deltaTime);
-		
-        return true;
 	}
 	/**
 	 * Read basic parameters and run in batch mode.
 	 * @param args
-	 * @return
+	 * 
+	 * run with --paramFile src/test/paramBatch.txt
+	 * 
 	 */
 	boolean testBatch(String[] args) {
-		Parameters param = new Parameters();
+		ParameterFactory param = new ParameterFactory();
+		DynSystem syst = new DynSystem(param);
+		Simulator sim = new Simulator(syst);
+		param.addObjectWithParameters(sim);
 		boolean res = param.parse(args);
-		
-		if (res==true) {
-			Simulator sim = new Simulator();
-			sim.runBatch(param);
-			return true;
+		if (res) {
+			sim.runBatch();	
 		}
-		return false;
+		else {
+			System.err.println("testBatch : parameters not parsed.");
+			return res;
+		}
+		
+		return res;
 	}
 	
 	/**

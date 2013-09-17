@@ -1,7 +1,7 @@
 # Parameters for Simulator
 -mt 2.0 --deltaTime 0.010 
 # log Screen and File
-#--logScreen --logFile log.data
+--logScreen --logFile logTest
 
 
 
