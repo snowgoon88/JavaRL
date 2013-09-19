@@ -3,16 +3,20 @@
  */
 package simulator;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 
 import org.kohsuke.args4j.Option;
+
+import utils.IParameters;
 
 /**
  * Implements the sensori-motor loop between an Agent and a World.
  * 
  * @author alain.dutech@loria.fr
  */
-public class Simulator {
+public class Simulator implements IParameters {
 	
 	DecimalFormat df3_5 = new DecimalFormat( "000.00000" );
 	
@@ -63,6 +67,15 @@ public class Simulator {
 		}
 		
 		_xp.end();
+	}
+
+	@Override
+	public void printValues(OutputStream out) {
+		PrintStream pout = new PrintStream(out);
+		pout.println("### "+getClass().getName());
+		pout.println("#     nbXp="+_nbXP);
+		pout.println("#     maxTime="+_maxTime);
+		pout.println("#     deltaTime="+_deltaTime);
 	}
 
 //	/**

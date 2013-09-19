@@ -1,13 +1,16 @@
 package simulator;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 
 import org.kohsuke.args4j.Option;
 
+import utils.IParameters;
 import utils.Log;
 import utils.ParameterFactory;
 
-public class XPDefault {
+public class XPDefault implements IParameters {
 
 	/** log info from XP */
 	@Option(name="-ls",aliases={"--logScreen"},usage="log info from XP on Screen")
@@ -89,5 +92,13 @@ public class XPDefault {
 	void setParamString() {
 		_paramString = "-noParameter";
 	};
+	
+	@Override
+	public void printValues(OutputStream out) {
+		PrintStream pout = new PrintStream(out);
+		pout.println("### "+getClass().getName());
+		pout.println("#     logScreen="+_logScreen);
+		pout.println("#     logFilename="+_logFilename);
+	}
 
 }

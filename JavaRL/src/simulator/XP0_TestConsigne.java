@@ -4,6 +4,9 @@
 package simulator;
 
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import model.Command;
 import model.CommandSequence;
 import model.CompleteArm;
@@ -11,6 +14,8 @@ import model.Consignes;
 import viewer.SCompleteArm;
 
 import org.kohsuke.args4j.Option;
+
+import utils.IParameters;
 import utils.ParameterFactory;
 
 import Jama.Matrix;
@@ -142,12 +147,20 @@ public class XP0_TestConsigne extends XPDefault {
 	@Override
 	void setParamString() {
 		// Set up a String for logFile header
-		_paramString = "-im"+_agent._indexMuscle+
+		_paramString = "-a0_"+_ang0+"-a1_"+_ang1+
+				"-im"+_agent._indexMuscle+
 				"-cv"+df3_5.format(_agent._consVal)+
 				"-ct"+df3_5.format(_agent._consTime);
 	}
+	@Override
+	public void printValues(OutputStream out) {
+		super.printValues(out);
+		PrintStream pout = new PrintStream(out);
+
+		pout.println("#     ang0="+_ang0+"  ang1="+_ang1);
+	}
 	
-	class Agent {
+	class Agent implements IParameters {
 		
 		/** Index of Muscle for Consigne */
 		@Option(name="--indexM",aliases={"-im"},usage="Index of Muscle for Consigne")
@@ -161,6 +174,14 @@ public class XP0_TestConsigne extends XPDefault {
 		
 		/** The Consigne */
 		Consignes _cons;
+		
+		@Override
+		public void printValues(OutputStream out) {
+			PrintStream pout = new PrintStream(out);
+			pout.println("### "+getClass().getName());
+			pout.println("#     indexMuscle="+_indexMuscle);
+			pout.println("#     consVal="+_consVal+"  consTime="+_consTime);
+		}
 
 	}
 
