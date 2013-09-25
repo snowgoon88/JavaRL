@@ -4,7 +4,8 @@ JavaRL - Bibliothèque d'apprentissage par renforcement en Java.
   * Définit une expérience qui hérite de XPDefault (ex: XP0_TestConsigne ou DynSystem)
   * lance avec "./run.sh Main nomClassXP [paramXO ...]'
   * example ./run.sh simulator.Main simulator.XP0_TestConsigne -a0 10 -a1 25 -im 0 -cv 0.01 -ct 0.3 -n 10 -lf test_cons -mt 2
-
+  * Scripts en R pour generer toutes les expérience et créer des fichier PNG pour visualiser
+  
 22/07/2013 Generic Simulator
   * Example de base avec le HumanArm
   * Utilisation de Parameters, lu depuis un fichier ou la ligne de commande.

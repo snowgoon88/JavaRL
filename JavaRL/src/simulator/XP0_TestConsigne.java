@@ -6,6 +6,7 @@ package simulator;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
 
 import model.Command;
 import model.CommandSequence;
@@ -41,6 +42,8 @@ public class XP0_TestConsigne extends XPDefault {
 	
 	int _dimMuscle = 0;
 	
+	DecimalFormat df1_3 = new DecimalFormat( "0.000" );
+	
 	/**
 	 * Creation of Agent,World, possibility to add to ParameterFactory.
 	 */
@@ -71,8 +74,8 @@ public class XP0_TestConsigne extends XPDefault {
 		for (int i=0; i < _dimMuscle; i++) {
 			CommandSequence cs = _agent._cons.get(i);
 			if (i == _agent._indexMuscle) {
-				cs.add(new Command( _agent._consVal,0));
-				cs.add(new Command( 0,_agent._consTime));
+				cs.add(new Command( 0, _agent._consVal));
+				cs.add(new Command( _agent._consTime, 0));
 			}
 			else {
 				cs.add(new Command(0,0));
@@ -93,11 +96,11 @@ public class XP0_TestConsigne extends XPDefault {
 		
 		// Logging
 		if (_logScreen ) {
-			System.out.println("#"+String.format("%8s", "time")+"\t"+_armV.explainStr);
+			System.out.println(String.format("%8s", "time")+"\t"+_armV.explainStr);
 			System.out.println(df3_5.format(0.0)+"\t"+_armV.viewStr);
 		}
 		if (_logFilename != "") {
-			_logFile.writeLine("#"+String.format("%8s", "time")+"\t"+_armV.explainStr);
+			_logFile.writeLine(String.format("%8s", "time")+"\t"+_armV.explainStr);
 			_logFile.write(df3_5.format(0.0)+"\t"+_armV.viewStr);
 		}
 	}
@@ -149,8 +152,8 @@ public class XP0_TestConsigne extends XPDefault {
 		// Set up a String for logFile header
 		_paramString = "-a0_"+_ang0+"-a1_"+_ang1+
 				"-im"+_agent._indexMuscle+
-				"-cv"+df3_5.format(_agent._consVal)+
-				"-ct"+df3_5.format(_agent._consTime);
+				"-cv"+df1_3.format(_agent._consVal)+
+				"-ct"+df1_3.format(_agent._consTime);
 	}
 	@Override
 	public void printValues(OutputStream out) {

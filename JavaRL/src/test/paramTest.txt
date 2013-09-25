@@ -1,0 +1,12 @@
+# Parameters for Simulator
+-mt 1.0 --deltaTime 0.005 -n 1
+# Parameters for the Agent
+-im 0 -cv 0.15 -ct 0.3
+# Parameters for XP
+-a0 10 -a1 25
+# log Screen and File
+--logScreen --logFile logTest
+
+
+
+

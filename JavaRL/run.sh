@@ -1,6 +1,12 @@
 #! /bin/zsh
 #
 # usage is './run.sh mainClass (parameters...)'
+if (($# < 2))
+then
+    echo "argc="$#
+    echo "usage : run.sh className XPClassName [args]"
+    exit
+fi
 
 LOCAL_CP="bin"
 LIB_JAVA="/usr/share/java"
