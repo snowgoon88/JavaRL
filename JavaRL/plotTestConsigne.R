@@ -80,7 +80,8 @@ plotTestConsigneAll <- function( listFile,  # list of filenames
   mat <- listMat[[1]]
   matplot( mat$time, cbind( mat[4+muscle], mat[10+muscle]), type="l", lty=1)
   for( mat in listMat ) {
-    matlines( mat$time, cbind( mat[4+muscle], mat[10+muscle]), type="l", lty=1)
+    matlines( mat$time, cbind( mat[4+muscle], mat[10+muscle],
+                               mat$torq0, mat$torq1), type="l", lty=1)
   }
   legend(x='topright',legend=c('cons','act'),
          lty=c(1,1,1,1),col=1:4)
@@ -96,7 +97,7 @@ generateCommand <- function()
 {
   angList <- list( c(10,25), c(15,30), c(35,120))
   muscleList <- 0:5
-  consList <- c(0.001,0.02,0.05,0.1,0.5)
+  consList <- c(0.01,0.02,0.05,0.1,0.5)
   nbXP <- 5
   for (ang in angList) {
     for (muscle in muscleList) {
@@ -119,9 +120,9 @@ generateCommand <- function()
         fileList <- dir( pattern=logFileBase )
 #         print( paste("PATTERN=",logFileBase) )
         print( paste("TO_PNG=",fileList ) )
-#         for( filename in fileList ) {
-#           plotTestConsigne( filename, muscle )
-#         }
+        for( filename in fileList ) {
+          plotTestConsigne( filename, muscle )
+        }
         plotTestConsigneAll( fileList, muscle )
       }
     }
