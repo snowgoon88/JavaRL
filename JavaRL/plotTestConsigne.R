@@ -2,14 +2,16 @@
 # ou Génération des fichiers et création de PNG
 #
 # ************** EXEMPLE AFFICHAGE **************************
-# Rscript plotTestConsigne.R visu test_cons-a0_10.0-a1_25.0-im0-cv000.10000-ct000.30000_*.data
+# Rscript plotTestConsigne.R visu 0 test_cons-a0_10.0-a1_25.0-im0-cv000.10000-ct000.30000_*.data
 #
 # ************** EXEMPLE GENERATION *************************
 # Rscript plotTestConsigne.R generate
 #
 # ***********************************************************
 
-plotTestConsigne <- function( file, muscle )
+# Make PNG file from result file for a specified muscle
+plotTestConsigne <- function( file,     # name of the file with results
+                              muscle )  # index of muscle to look at
 {
   mat <- read.table( file, header=TRUE)
   
@@ -43,7 +45,9 @@ plotTestConsigne <- function( file, muscle )
   dev.off()
 }
 
-plotTestConsigneAll <- function( listFile, muscle )
+# Make PNG file with all result files, for a specified muscle
+plotTestConsigneAll <- function( listFile,  # list of filenames 
+                                 muscle )   # index of muscle to look at
 {
   listMat <- list()
   for( i  in 1:length(listFile) ) {
@@ -85,7 +89,11 @@ plotTestConsigneAll <- function( listFile, muscle )
   dev.off()
   
 }
-generateCommand <- function() {
+
+# Generate many results file for XP0_TestConsigne
+# Range of experiment plan is hard coded
+generateCommand <- function()
+{
   angList <- list( c(10,25), c(15,30), c(35,120))
   muscleList <- 0:5
   consList <- c(0.001,0.02,0.05,0.1,0.5)
@@ -120,6 +128,7 @@ generateCommand <- function() {
   }
 }
 
+# When invoked as a Script **********************************
 ## Lecture des arguments
 arg <- commandArgs()
 print(arg)
@@ -127,19 +136,15 @@ print(arg)
 if (length(arg) < 6) {
   print("usage: Rscript plotTestConsigne.R visu muscle files")
   print("usage: Rscript plotTestConsigne.R generate")
-} else {
-  if (arg[6] == "visu") {
-    for( name in arg[8:length(arg)]) {
-      plotTestConsigne( name, muscle=as.numeric(arg[7]) )
-    }
-    plotTestConsigneAll(arg[8:length(arg)], muscle=as.numeric(arg[7]))
-  } else {
-    if (arg[6] == "generate") {
-      generateCommand()
-    } else {
-      print("usage : command must be visu OU generate")
-    }
+} else if (arg[6] == "visu") {
+  for( name in arg[8:length(arg)]) {
+    plotTestConsigne( name, muscle=as.numeric(arg[7]) )
   }
+  plotTestConsigneAll(arg[8:length(arg)], muscle=as.numeric(arg[7]))
+} else if (arg[6] == "generate") {
+  generateCommand()
+} else {
+  print("usage : command must be visu OU generate")
 }
 
 
