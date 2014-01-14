@@ -1,0 +1,15 @@
+columns = "`head lspi_chain.out -n1 | wc -w`"
+nbact = 2
+what(n) = sprintf("Q_%d(s,%d)",(n/nbact)-1,n%nbact)
+set multiplot;
+set size 1,0.5;
+set origin 0.0, 0.5;
+print columns
+set title "LSTDQ"
+plot for [i=2:columns-1] "lspi_chain.out" using 1:i with lines title what(i);
+set origin 0.0, 0.0;
+columns = "`head lspi_chain_fast.out -n1 | wc -w`"
+print columns
+set title "LSTDQFast"
+plot for [i=2:columns-1] "lspi_chain_fast.out" using 1:i with lines title what(i);
+unset multiplot
